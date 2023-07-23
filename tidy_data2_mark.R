@@ -105,3 +105,13 @@ df <- tibble::tribble(
 )
 
 df
+# 删除缺失行
+# 方法1.
+df %>% filter(!is.na(score))
+
+# 方法2.
+df %>% filter(across(everything(),~!is.na(.x)))
+
+# 方法3. 最简便
+df %>% drop_na(score)
+df %>% mutate(score=replace_na(score,0))              

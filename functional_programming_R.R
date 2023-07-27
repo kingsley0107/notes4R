@@ -1,6 +1,7 @@
 library(stats19)
 library(tidyverse)
 library(readxl)
+library(sf)
 accident_19 <- get_stats19(year = 2019, type = "accident")
 tail(accident_19)
 
@@ -54,3 +55,23 @@ daily_accident
 
 daily_volumn %>% ggplot(aes(Date,daily_Volumn))+geom_point()
 daily_accident %>% ggplot(aes(Date,daily_accident))+geom_point()
+
+London_shp <- st_read(here::here("FOI/data/geo/statistical-gis-boundaries-london/ESRI","London_Borough_Excluding_MHW.shp"))
+Targets_shp <- London_shp %>% filter(NAME %in% c('Westminster','Lambeth',"Tower Hamlets"))
+Targets_shp
+# 使用ggplot绘制空间数据
+ggplot(data = Targets_shp) +
+  geom_sf()
+
+stations <- read_excel(here::here("FOI/data/ATC","FOI_0917_2324_ATC_Metadata.xlsx"))
+stations_sf = st_as_sf(stations,coords = c("Easting","Northing"),crs=27700)
+stations_sf_trans = stations_sf %>%  st_transform(4326)
+stations_sf_trans
+
+ggplot()+geom_sf(data=Targets_shp)+geom_sf(data=stations_sf_trans,color='red',size=2)
+
+London_road_shp = st_read(here::here("FOI/data/geo/road","gdf_london_roadlink.shp"))
+target_road = London_road_shp %>% filter(NAME %in% c('Westminster','Lambeth',"Tower Hamlets"))
+ggplot()+geom_sf(data=Targets_shp,color='blue',linewidth =2,fill=NA)+geom_sf(data=target_road,color='grey')+geom_sf(data=stations_sf_trans,color='red',size=2,)+ggtitle("Basic spatial distribution")
+
+

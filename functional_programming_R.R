@@ -2,7 +2,7 @@ library(stats19)
 library(tidyverse)
 library(readxl)
 library(sf)
-accident_19 <- get_stats19(year = 2019, type = "accident")
+accident_19 <- get_stats19(year = 2019, type = "casualty")
 tail(accident_19)
 
 ATC_data <- read_excel(here::here("FOI/data/ATC","FOI_0917_2324_ATC_010119_010122_Westminster.xlsx"))
